@@ -33,6 +33,18 @@
       document.getElementById("baseCase").innerHTML = basePredicate
     }
 
+    function update_nd(){
+      skip = Number(document.getElementById("skip-input").value)
+      nd = n0+skip-1
+      let baseIH = 'Assume P($n0$) ... P($nd$) ... P(k) is true'
+      baseIH = baseIH.replace("$n0$", String(n0))
+      baseIH = baseIH.replace("$nd$", String(nd))
+      document.getElementById("IH").innerHTML = baseIH
+      document.getElementById("IHStatement").innerHTML = ""
+
+      setDependencies()
+    }
+
     function selectStrategy() {
 
       let selector = document.getElementById("selectStrategy").value
@@ -337,7 +349,8 @@
       <span class="input-group-text">skip back by </span>
     </div>
     <input type="number" class="form-control"
-      id="skip-input" 
+      id="skip-input"
+      onchange="update_nd()" 
       placeholder="Enter the amount to skip back in a proof chain."
       aria-label="Skip" >
   </div>
