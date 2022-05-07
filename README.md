@@ -1,2 +1,4 @@
 # Induction
-Structure and visualize a proof by induction
+Structure and explore dependencies in a proof by induction
+
+Run the app at https://charles-hoot.github.io/Induction/induction_app.html
