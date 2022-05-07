@@ -1,2 +1,2 @@
 # Induction
-Structure and visualize a proof by induction
+Structure and explore dependencies in a proof by induction
