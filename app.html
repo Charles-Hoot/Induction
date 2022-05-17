@@ -288,8 +288,19 @@
   </script>
 
 
+<div class="btn-toolbar mb-3 ml-3">
+  <button type="button" class="btn btn-warning btn-sm m-1"
+    onclick="clearAll()">Clear</button>
+  <button type="button" class="btn btn-success btn-sm m-1"
+    onclick="sampleChain()">Sample Weak Induction</button>
+  <button type="button" class="btn btn-success  btn-sm m-1"
+    onclick="sampleMultiChain()">Sample Multi chain</button>
+  <button type="button" class="btn btn-success btn-sm m-1"
+    onclick="sampleTree()">Sample Tree</button>
+</div>
+
   <div class="row input-group mb-3 ml-3">
-    <div class="input-group-prepend">
+    <div class="input-group-prepend col-sm-1">
       <span class="input-group-text">P(n) is </span>
     </div>
     <input type="text" class="form-control"
@@ -406,16 +417,6 @@
   </div>
 
 
-<div class="container">
-  <button type="button" class="btn btn-warning btn-sm"
-    onclick="clearAll()">Clear</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleChain()">Sample Weak Induction</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleMultiChain()">Sample Multi chain</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleTree()">Sample Tree</button>
-  </div>
 
 </body>
 </html>
