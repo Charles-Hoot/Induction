@@ -15,26 +15,256 @@
 
 </head>
 <body>
-  <h1> Induction Explorer</h1>
+  <h1> &nbsp Induction Explorer</h1>
 
   <div class="wrapper">
-    <div class="steps">Steps</div>
-    <div class="baseCase">Base Case</div>
-    <div class="patterns">Pat</div>
-    <div class="giveShow">IH</div>
-    <div class="proof">The general proof</div>
-    <div class="extra">Direct proofs</div>
+
+    <div class="steps" >
+      <div backgroundColor="gold" id="steps">
+        Step 1 - Enter predicate
+      </div>
+      <button class="btn btn-sm btn-success" onclick="nextStep(onStep)">
+        Next (No update)
+      </button>
+    </div>
+
+    <div class="predicate container" id="Step1">
+      <label for="predicate-input">P(n) is &nbsp &nbsp</label>
+      <textarea id="predicate-input" name="textarea" rows="2" cols="40"
+        alt="Enter/change predicate and click outside window to move on"
+        onchange = "loadBase();nextStep(1)" 
+        aria-label="Predicate">Enter a predicate here.  Use $n$ in the predicate statement. Do not include a quantifier.
+      </textarea>
+    </div>
+
+    <div class="baseValue" id="Step2">
+      <label for="baseCase-input">n_0 is &nbsp </label>
+      <input 
+        alt="Enter/update base value and return or click outside window to move only"
+        onchange = "loadBase();nextStep(2);forwardChange()"
+        id="baseCase-input"
+        type="number" min="0" value="0"
+        class="form-control" 
+        placeholder="Smallest value for which you must directly show P(n) is true"
+        aria-label="Base" >
+    </div>
+
+    <div class="baseShow" style="background-color:lightblue;">
+      <div><b>Base case</b></div>
+    
+      <div class="row">
+        <div id="baseCase" class="col-sm-2" style="background-color:lightblue;">P(n_0) is </div>
+        <div id="baseCaseStatement" class="col-md-10" style="background-color:whitesmoke;">Show base case</div>
+      </div>
+    </div>
+
+    <div class="baseProof" id="Step3">
+      <label for="base-proof">Proof: &nbsp </label>
+      <textarea id="base-proof" name="textarea" rows="4" cols="35" 
+         onchange="nextStep(3)"
+         aria-label="Base Case"
+         rows="4">Enter proof for base case here.
+      </textarea>
+      <div class="col-sm-2" style="background-color:whitesmoke;"></div>
+    </div>
+
+    <div class="container controls">
+      <button type="button" class="btn btn-warning btn-sm m-1"
+        onclick="clearAll()">Clear All</button>
+      <button type="button" class="btn btn-success  btn-sm m-1"
+        onclick="sampleChain()">Sample Weak Induction</button>
+      <button type="button" class="btn btn-success  btn-sm m-1"
+        onclick="sampleMultiChain()">Sample Multi chain</button>
+      <button type="button" class="btn btn-success  btn-sm m-1"
+        onclick="sampleTree()">Sample Tree</button>
+    </div>
+
+    <div class="strategyChoice col-sm-4 ml-3 mb-3" id="Step4">
+        <select class="form-select bg-success text-white" aria-label="Select proof style"
+          id="selectStrategy"
+          onchange="selectStrategy();nextStep(4);setND();showExtraBaseCases()">
+          <option selected value="Pick One">Select proof strategy from options</option>
+          <option value="Single Chain">Single logic chain (weak induction)</option>
+          <option value="Multi Chain">Multiple logic chains</option>
+          <option value="Tree Arbitrary Split">Tree pattern arbitrary splits</option>
+        </select>
+    </div>
+
+    <div class="skipValue" id="Step4.5" >
+      <div class="row input-group mb-3 ml-3"
+        id="skip-input-group" >
+        <div class="input-group-prepend col-sm-3">
+          <span class="input-group-text">skip back by </span>
+        </div>
+        <input type="number" class="form-control"
+          onchange="nextStep(4.5);setNd(); selectStrategy(); showExtraBaseCases()"
+          id="skip-input" 
+          placeholder="Enter the amount to skip back in a proof chain."
+          aria-label="Skip" >
+      </div>
+    </div>
+
+    <div class="ihShow" style="background-color:lightblue;">
+      <div><b>Induction hypothesis</b></div>
+      <div class="row">
+        <div id="IH" class="col-sm-2" 
+          style="background-color:lightblue;">P(k) is </div>
+        <div id="IHStatement" class="col-md-6" style="background-color:whitesmoke;"></div>
+      </div>
+    </div>
+
+    <div class="toShow" style="background-color:lightblue;">
+      <div class="row">
+        <div id="IC" class="col-sm-2" 
+          style="background-color:lightblue;">P(k+1) is </div>
+        <div id="ICStatement" class="col-md-6" 
+          style="background-color:whitesmoke;">Inductive case to show</div>
+      </div>
+    </div>
+
+    <div class="inductiveProof" id="Step5">
+      <label for="inductive-proof">Proof: &nbsp </label>
+      <textarea id="inductive-proof" name="textarea" rows="4" cols="35"
+         onchange="nextStep(5)" 
+         aria-label="ICProof"
+         rows="10">Prove P(k+1) using the induction hypothesis
+      </textarea>
+    </div>
+
+    <div class="extraBaseCases" id="Step6" 
+      hidden="true"
+      style="background-color:lightblue;">
+      <div>Extra Base Cases</div>
+      
+      <div class="row">
+        <div id="baseCaseExtra" class="col-sm-2" style="background-color:lightblue;">P(n_0)..P(nd) </div>
+        <textarea id="extra-base-proof" name="textarea" rows="4" cols="35"
+         onchange="nextStep(6)" 
+         aria-label="ICProof"
+         rows="5">Proofs for the remaining base cases
+        </textarea>
+      </div>
+    </div>
+  
+    <div class="explore">
+      <div 
+        class=col-sm-6
+        style="background-color:whitesmoke;">See dependencies for P(n)</div>
+      <input 
+          id="dependency-input"
+          onchange="setDependencies()"
+          style="background-color:white;"
+          type="number" 
+          class="input-group-text col-sm-10" 
+          placeholder="Value of n = "
+          aria-label="Dependencies" >
+      <input 
+          id="left-input"
+          hidden="true"
+          onchange="setDependencies()"
+          style="background-color:white;"
+          type="number" 
+          class="input-group-text col-sm-10" 
+          placeholder="Left subtree size"
+          aria-label="Dependencies" >
+      <div class="input-group-text col-sm-10"
+          style="background-color:whitesmoke;"
+          id="dependency-statement">
+          Enter values of n to see dependency
+      </div>
+    </div>
   </div>
 
+  
   <script>
     let predicate = "No predicate yet"
-    let ih = "No proof strategy yet"
+    let strategy = "No proof strategy yet"
     let nString = "$n$"
     let n0 = undefined
     let nd = undefined
     let left = undefined
     let skip = undefined
 
+    let onStep = 1
+    let maxStep = 7
+
+    function nextStep(fromStep){
+      console.log("next "+ onStep + " from "+fromStep)
+      if(fromStep<onStep) onStep=fromStep
+      switch (strategy){
+        case "Multi Chain":
+          targetStep= nextStepMultiChain()
+          break;
+        default:
+          targetStep = onStep + 1
+          break;
+      }
+      if (targetStep > maxStep) targetStep = maxStep
+      console.log("target set to " + targetStep)
+      onStep=targetStep
+      setStep()
+    }
+
+    function nextStepMultiChain(){
+      if(onStep==4)
+        return 4.5
+      if (onStep==4.5)
+        return 5
+      else
+        return onStep+1
+    }
+
+    
+
+    function setStep(){
+      ele = document.getElementById("steps")
+      console.log("Set step for " + onStep)
+
+      document.getElementById("Step1").style.backgroundColor="lightBlue"
+      document.getElementById("Step2").style.backgroundColor="lightBlue"
+      document.getElementById("Step3").style.backgroundColor="lightBlue"
+      document.getElementById("Step4").style.backgroundColor="lightBlue"
+      document.getElementById("Step4.5").style.backgroundColor="lightBlue"
+      document.getElementById("Step5").style.backgroundColor="lightBlue"
+      document.getElementById("Step6").style.backgroundColor="lightBlue"
+      switch (onStep) {
+        case 1:
+          ele.innerHTML = "Step 1 - Set predicate (change and click outside text area)"
+          document.getElementById("Step1").style.backgroundColor="gold"
+          break;
+        case 2:
+          document.getElementById("Step2").style.backgroundColor="gold"
+          ele.innerHTML = "Step 2 - Set base value (change and return)"
+          break;
+        case 3:
+          ele.innerHTML = "Step 3 - Prove the base case (change and click outside text area)"
+          document.getElementById("Step3").style.backgroundColor="gold"
+          break;
+        case 4:
+          ele.innerHTML = "Step 4 - Choose proof strategy (select new strategy)"
+          document.getElementById("Step4").style.backgroundColor="gold"
+          break;
+        case 4.5:
+          ele.innerHTML = "Step 4.5 - Set skip value (chain strategy only) (change and enter)"
+          document.getElementById("Step4.5").style.backgroundColor="gold"
+          break;
+        case 5:
+          ele.innerHTML = "Step 5  - Prove recursive case (change and click outside text area)"
+          document.getElementById("Step5").style.backgroundColor="gold"
+          break;
+        case 6:
+          ele.innerHTML = "Step 6 - Prove extra base cases (change and click outside text area)"
+          document.getElementById("Step6").style.backgroundColor="gold"
+          break;
+        case 7:
+          ele.innerHTML = "Proof finished"
+          break;
+      }
+    }
+
+    setStep()
+    document.getElementById("Step4.5").hidden="true"
+          
     function loadBase() {
       predicate = String(document.getElementById("predicate-input").value)
       n0 = Number(document.getElementById("baseCase-input").value)
@@ -45,15 +275,29 @@
       document.getElementById("baseCase").innerHTML = basePredicate
     }
 
-    function selectStrategy() {
-
+    function forwardChange(){
+      // Will update a change in the base case value in the inductive part 
       let selector = document.getElementById("selectStrategy").value
+      if(selector == "Pick One") return;
+      selectStrategy(); 
+    }
+
+    function selectStrategy() {
+      let selector = document.getElementById("selectStrategy").value
+      document.getElementById("left-input").hidden=true;
+      console.log("Select n0 " + n0 + " nd "+nd)
+      setNd();
+      console.log("SetNd n0 " + n0 + " nd "+nd)
+      strategy = selector
       //alert("selected "+ selector)
-      let baseIH = 'Assume P($n$) is true'
+      let baseIH = 'Assume P($n$) is true when k>=$n0$'
+      baseIH = baseIH.replace("$n0$", String(n0))
       let baseIC = 'Show P($n$) is true'
       switch(selector){
         case "Single Chain":
-          baseIH = 'Assume P($n$) is true'
+          console.log("SC n0 " + n0 + " nd "+nd)
+          baseIH = 'Assume P($n$) is true when k>=$n0$'
+          baseIH = baseIH.replace("$n0$", String(n0))
           baseIH = baseIH.replace(nString, "k")
           document.getElementById("IH").innerHTML = baseIH
           document.getElementById("IHStatement").innerHTML = predicate.replaceAll(nString,"k" )
@@ -63,13 +307,14 @@
           document.getElementById("IC").innerHTML = baseIC
           document.getElementById("ICStatement").innerHTML = predicate.replaceAll(nString,"{k+1}" )
           
-          document.getElementById("skip-input-group").hidden = true
+          document.getElementById("Step4.5").hidden = true
       
           break;
         case "Multi Chain":
-          baseIH = 'Assume P($n0$) ... P($nd$) ... P(k) is true'
+          console.log("MC n0 " + n0 + " nd "+nd)
+          baseIH = 'Assume P($n0$) ... P($nd$) ... P(k) is true when k>=$nd$'
           baseIH = baseIH.replace("$n0$", String(n0))
-          baseIH = baseIH.replace("$nd$", String(nd))
+          baseIH = baseIH.replaceAll("$nd$", String(nd))
           document.getElementById("IH").innerHTML = baseIH
           document.getElementById("IHStatement").innerHTML = ""
           
@@ -77,35 +322,81 @@
           baseIC = baseIC.replace(nString, "k+1")
           document.getElementById("IC").innerHTML = baseIC
           document.getElementById("ICStatement").innerHTML = predicate.replaceAll(nString,"{k+1}" )
+
+          document.getElementById("Step4.5").hidden=false
           
           break;
 
           case "Tree Arbitrary Split":
-          baseIH = 'Assume P($n0$) ... P(k) is true'
-          baseIH = baseIH.replace("$n0$", String(n0))
-          document.getElementById("IH").innerHTML = baseIH
-          document.getElementById("IHStatement").innerHTML = ""
+            document.getElementById("left-input").hidden=false;
+            console.log("TAS n0 " + n0 + " nd "+nd)
+            if(n0==nd){
+              baseIH = 'Assume P($n0$) ... P(k) is true when k>=$n0$'
+            } else {
+              baseIH = 'Assume P($n0$) ... P($nd$) ... P(k) is true when k>=$nd$'
+            }
+            baseIH = baseIH.replace("$n0$", String(n0))
+            baseIH = baseIH.replaceAll("$nd$", String(nd))
           
-          baseIC = 'Show P($n$) is true'
-          baseIC = baseIC.replace(nString, "k+1")
-          document.getElementById("IC").innerHTML = baseIC
-          document.getElementById("ICStatement").innerHTML = predicate.replaceAll(nString,"{k+1}" )
+            document.getElementById("IH").innerHTML = baseIH
+            document.getElementById("IHStatement").innerHTML = ""
           
-          document.getElementById("skip-input-group").hidden=true
-      
+            baseIC = 'Show P($n$) is true'
+            baseIC = baseIC.replace(nString, "k+1")
+            document.getElementById("IC").innerHTML = baseIC
+            document.getElementById("ICStatement").innerHTML = predicate.replaceAll(nString,"{k+1}" )
+          
+            document.getElementById("Step4.5").hidden=true
           break;
         default:
-          alert("default")
+          alert("Select one of the three proof strategy options")
       }
+      showExtraBaseCases();
     }
 
+  function setNd(){
+    let selector = document.getElementById("selectStrategy").value
+    switch(selector){
+      case "Single Chain":
+        nd = n0;
+        break;
+      case "Multi Chain":
+        skip = Number(document.getElementById("skip-input").value)
+        nd = n0+skip-1
+        break;
+      case "Tree Arbitrary Split":
+        nd=2*n0-1
+        break;
+      default:
+        nd=n0
+        break;
+    }
+  }
+
+  function showExtraBaseCases(){
+    console.log("show extras " + n0 + " " + nd)
+    if(n0==undefined || nd==undefined){
+      document.getElementById("Step6").hidden=true;
+    } else if (n0==nd){
+      document.getElementById("Step6").hidden=true;
+    } else {
+      document.getElementById("Step6").hidden=false;
+      baseList = 'P($n0$) ... P($nd$)'
+      baseList = baseList.replace("$n0$", String(n0+1))
+      baseList = baseList.replace("$nd$", String(nd))
+      let extras = document.getElementById("baseCaseExtra")
+      extras.innerHTML=baseList
+      console.log("base List " + baseList)
+    }
+  }
+
   function setDependencies(){
+    setNd()
     let selector = document.getElementById("selectStrategy").value
     let value = Number(document.getElementById("dependency-input").value)
     let baseDepend = "";
     console.log('value ' + value + ' n0 ' + n0 + ' nd ' + nd)
-    if (value < n0)
-    {
+    if (value < n0) {
       console.log(' out value ' + value + ' n0 ' + n0)
       baseDepend = "P($n$) is outside proof range"
       baseDepend = baseDepend.replaceAll("$n$", String(value))
@@ -144,7 +435,7 @@
             baseDepend = "Need a left split size"
           } else if (left < n0) {
             baseDepend = "Need a larger left split size"
-          } else if (left > value-1) {
+          } else if (left>value-n0 ) {
             baseDepend = "Need a smaller left split size"
           } else {
             baseDepend = "P($n$) depends on P($left$) and P($n-left$)"
@@ -155,20 +446,22 @@
           document.getElementById("dependency-statement").innerHTML = baseDepend 
           break;
         default:
-          alert("default")
+          alert("Need a strategy selected")
       }
-
     }
   }
 
-    function clearAll(){
-      //alert("Clearing all")
-      predßcate = "No predicate yet"
-      ih = "No proof strategy yet"
-      n0 = undefined
-      nd = undefined
-      left = undefined
-      skip = 1
+  function clearAll(){
+    //alert("Clearing all")
+    predicate = "No predicate yet"
+    ih = "No proof strategy yet"
+    n0 = undefined
+    nd = undefined
+    left = undefined
+    skip = 1
+    onStep = 1
+    setStep(1)
+
 
       document.getElementById("predicate-input").value = ""
       
@@ -178,15 +471,18 @@
       document.getElementById("base-proof").value = ""
       document.getElementById("selectStrategy").value = "Pick One"
       document.getElementById("skip-input").value = ""
-      document.getElementById("skip-input-group").hidden = true
+      document.getElementById("Step4.5").hidden = true
       document.getElementById("dependency-input").value = ""
       document.getElementById("dependency-statement").innerHTML = "Enter values to left to see dependency"
-      document.getElementById("left-input").value = ""
+      document.getElementById("left-input").value = undefined
+      document.getElementById("left-input").hidden=true
       document.getElementById("IH").innerHTML = "Assume P(k) is true"
       document.getElementById("IHStatement").innerHTML = "Induction Hypothesis"
       document.getElementById("IC").innerHTML = "Show P(k+1) is true"
       document.getElementById("ICStatement").innerHTML = "Inductive Case to Show"
       document.getElementById("inductive-proof").value = ""
+      document.getElementById("Step6").hidden=true;
+      
     }
 
     function sampleChain(){
@@ -194,6 +490,9 @@
       document.getElementById("predicate-input").value = predicate
       n0 = 0
       nd = 0
+      onStep = maxStep
+      setStep(maxStep)
+
       document.getElementById("baseCase-input").value = n0
       loadBase()
 
@@ -202,12 +501,13 @@
 
       document.getElementById("selectStrategy").value = "Single Chain"
       selectStrategy();
+      showExtraBaseCases();
       
       console.log("Single chain strategy selected")
      
       document.getElementById("dependency-statement").innerHTML = "Enter values to left to see dependency"
-      document.getElementById("skip-input-group").hidden = true
-      document.getElementById("left-input").style.display = "none"
+      document.getElementById("Step4.5").hidden = true
+      document.getElementById("left-input").hidden= true
 
       console.log("About to set proof")
 
@@ -228,6 +528,9 @@
       n0 = 8
       nd = 10
       skip = 3
+      onStep = maxStep
+      setStep(maxStep)
+
       document.getElementById("baseCase-input").value = n0
       loadBase()
 
@@ -236,11 +539,12 @@
 
       document.getElementById("selectStrategy").value = "Multi Chain"
       selectStrategy();
+      showExtraBaseCases();
 
-      document.getElementById("dependency-statement").innerHTML = "Enter values to left to see dependency"
+      document.getElementById("dependency-statement").innerHTML = "Enter values of n to see dependency"
       document.getElementById("skip-input").value = "3"
-      document.getElementById("skip-input-group").hidden = false;
-      document.getElementById("left-input").style.display = "none"
+      document.getElementById("Step4.5").hidden = false;
+      document.getElementById("left-input").hidden = true
       document.getElementById("left-input").value = undefined
       
 
@@ -259,6 +563,8 @@
       n0 = 1
       nd = 1
       left = 1
+      onStep = maxStep
+      setStep(maxStep)
       document.getElementById("baseCase-input").value = n0
       loadBase()
 
@@ -267,11 +573,12 @@
 
       document.getElementById("selectStrategy").value = "Tree Arbitrary Split"
       selectStrategy();
+      showExtraBaseCases();
 
-      document.getElementById("dependency-statement").innerHTML = "Enter values to left to see dependency"
-      document.getElementById("skip-input-group").hidden = true
-      document.getElementById("left-input").style.display = "block"
-      document.getElementById("left-input").value = ""
+      document.getElementById("dependency-statement").innerHTML = "Enter values of n to see dependency"
+      document.getElementById("Step4.5").hidden = true
+      document.getElementById("left-input").hidden=false
+      document.getElementById("left-input").value = undefined
 
       inductiveProof = "We start with a k+1 candy bar and break it somewhere in the middle\n"
       inductiveProof += "We get two pieces, call them left and right\n"
@@ -288,133 +595,30 @@
   </script>
 
 
-  <div class="row input-group mb-3 ml-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text">P(n) is </span>
-    </div>
-    <input type="text" class="form-control"
-      id="predicate-input" 
-      placeholder="Enter a predicate here.  Use $n$ in the predicate statement. Do not include a quantifier."
-      aria-label="Predicate" >
-  </div>
-
-  <div class="row input-group mb-3 ml-3">
-    <div class="input-group-prepend col-sm-1">
-      <span class="input-group-text" >n_0 is  </span>
-    </div>
-    <input 
-    id="baseCase-input"
-    type="number" class="form-control col-sm-2" 
-    placeholder="Enter the smallest value for which you must show that P(n) is true"
-    aria-label="Base" >
-  </div>
 
 
-  <button type="button" 
-    onclick="loadBase()"
-    class="btn btn-success">Get Base Case</button>
-
-  <div class="row">
-    <div id="baseCase" class="col-sm-1" style="background-color:whitesmoke;">P(n_0) is </div>
-    
-    <div id="baseCaseStatement" class="col-md-10" style="background-color:white;">Show base case</div>
-  </div>
 
 
-  <div class="row mb-5">
-    <div class="col-sm-2" style="background-color:whitesmoke;"></div>
-    <textarea class="col-md-10"
-      id="base-proof" 
-      placeholder="Give a proof for the base case"
-      rows="4"
-      style="background-color:white;"></textarea>
-  </div>
 
-  <div class="row col-sm-4 ml-3 mb-3">
-  <select class="form-select bg-success text-white" aria-label="Select proof style"
-    id="selectStrategy"
-    onchange="selectStrategy()"
-    >
-    <option selected value="Pick One">Select proof style from options</option>
-    <option value="Single Chain">Single logic chain (weak induction)</option>
-    <option value="Multi Chain">Multiple logic chains</option>
-    <option value="Tree Arbitrary Split">Tree pattern arbitrary splits</option>
-  </select>
-</div>
+
+
+
+
   
 
-  <div class="row input-group mb-3 ml-3"
-    id="skip-input-group" hidden>
-    <div class="input-group-prepend col-sm-2">
-      <span class="input-group-text">skip back by </span>
-    </div>
-    <input type="number" class="form-control"
-      id="skip-input" 
-      placeholder="Enter the amount to skip back in a proof chain."
-      aria-label="Skip" >
-  </div>
+  
 
-  <div class="row input-group mb-3 ml-3">
-    <div class="input-group-prepend col-sm-1">
-      <span class="input-group-text" >  </span>
-    </div>
-
-    <input 
-    id="dependency-input"
-    onchange="setDependencies()"
-    type="number" 
-    class="form-control input-group-text col-sm-2" 
-    placeholder="Dependencies for n = "
-    aria-label="Base" >
-
-    <input 
-    id="left-input"
-    onchange="setDependencies()"
-    type="number" class="form-control collapse input-group-text col-sm-2 " 
-    placeholder="left split size is "
-    aria-label="Base" >
-
-    <div class="input-group-text col-sm-8"
-      id="dependency-statement">
-      Enter values to left to see dependency
-    </div>
-  </div>
+ 
 
 
 
-  <div class="row mb-3 ml-3">
-    <div id="IH" class="col-sm-2" style="background-color:whitesmoke;">Assume P(k) is true </div>
-    
-    <div id="IHStatement" class="col-md-10" style="background-color:white;">Induction hypothesis</div>
-</div>
 
 
-<div class="row mb-3 ml-3">
-    <div id="IC" class="col-sm-2" style="background-color:whitesmoke;">Show P(k+1) is true </div>
-    
-    <div id="ICStatement" class="col-md-10" style="background-color:white;">Inductive case to show</div>
-</div>
-
-  <div class="row mb-3 ml-3">
-    <div class="col-sm-2" style="background-color:whitesmoke;"></div>
-    <textarea class="col-md-10" 
-      id="inductive-proof"
-      placeholder="Prove P(k+1) using the induction hypothesis"
-      rows="10"
-      style="background-color:white;"></textarea>
-  </div>
 
 
-<div class="container">
-  <button type="button" class="btn btn-warning btn-sm"
-    onclick="clearAll()">Clear</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleChain()">Sample Weak Induction</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleMultiChain()">Sample Multi chain</button>
-  <button type="button" class="btn btn-success  btn-sm"
-    onclick="sampleTree()">Sample Tree</button>
-  </div>
+
+  
+
 
 </body>
 </html>
