@@ -75,7 +75,7 @@ label {
   }
 
   .inductiveProof {
-    grid-row: 12 / 15;
+    grid-row: 11 / 15;
     grid-column: 2 / 7;
     background-color: lightblue;
     padding: 6px;
