@@ -536,7 +536,7 @@
       document.getElementById("baseCase-input").value = n0
       loadBase()
 
-      baseProof = "8 cents is one of each\nCheck"
+      baseProof = "8 cents is one 5 cent and one 3 cent\nCheck"
       document.getElementById("base-proof").value = baseProof
 
       document.getElementById("selectStrategy").value = "Multi Chain"
@@ -556,7 +556,11 @@
       inductiveProof += "By the IH postage of k-2 is composable and we are done\n"
       inductiveProof += "Check"
       document.getElementById("inductive-proof").value = inductiveProof
-      
+
+      extraBasesProof = "9 cents is 3 by 3 cents\n"
+      extraBasesProof += "10 cents is 2 by 5 cents\n"
+      extraBasesProof += "Check"
+      document.getElementById("extra-base-proof").value = extraBasesProof
     }
 
     function sampleTree(){
